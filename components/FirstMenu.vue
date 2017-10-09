@@ -19,12 +19,6 @@ export default {
     }
   },
   computed: {
-    curFirstMenuId () {
-      return this.$store.state.curFirstMenuId
-    },
-    isAdmin () {
-      return this.$store.state.isAdmin
-    },
     firstMenuList () {
       return this.$store.state.firstMenuList
     }

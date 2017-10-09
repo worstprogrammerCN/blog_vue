@@ -47,11 +47,11 @@ const store = () => new Vuex.Store({
       name: 'vue',
       articles: [{
         id: '0',
-        name: 'vue first article',
+        title: 'vue first article',
         isActive: true
       }, {
         id: '1',
-        name: 'vue second article',
+        title: 'vue second article',
         isActive: false
       }]
     }, {
@@ -59,13 +59,10 @@ const store = () => new Vuex.Store({
       name: 'nuxt',
       articles: [{
         id: '0',
-        name: 'nuxt first article',
+        title: 'nuxt first article',
         isActive: false
       }]
     }],
-    curFirstMenuId: '',
-    curSecondMenuId: '',
-    curArticleId: '',
     isAdmin: true
   },
   mutations: {
@@ -74,6 +71,13 @@ const store = () => new Vuex.Store({
     },
     addSecondMenu (state, menu) {
       state.secondMenuList.push(menu)
+    },
+    deleteSecondMenu (state, menuId) {
+      state.secondMenuList = state.secondMenuList.filter((menu) => menu.id !== menuId)
+    },
+    deleteArticle (state, { secondMenuId, articleId }) {
+      let secondMenu = state.secondMenuList.find((menu) => menu.id === secondMenuId)
+      secondMenu.articles = secondMenu.articles.filter((article) => article.id !== articleId)
     }
   }
 })
