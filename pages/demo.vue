@@ -97,7 +97,7 @@ export default {
   props: ['rawText', 'rawTitle'],
   data () {
     return {
-      text: this.rawText,
+      text: '',
       title: '',
       isCreating: true,
       isEditing: false,
@@ -117,10 +117,62 @@ export default {
     this.text = this.rawText
     this.title = this.rawTitle
   },
+  watch: {
+    rawText (val) {
+      this.text = val
+    },
+    rawTitle (val) {
+      this.title = val
+    }
+  },
+  methods: {
+    startCreating () {
+      this.isCreating = true
+      this.title = ''
+      this.text = ''
+    },
+    upload () {
+      // upload new article
+      this.isCreating = false
+    },
+    cancelUpload () {
+      this.isCreating = false
+    },
+    changeTitle () {
+      this.isEditingTitle = true
+      this.newTitle = this.title
+      console.log('isEditingTitle', this.isEditingTitle)
+    },
+    submitTitle () {
+      // post new title
+      this.title = this.newTitle
+      this.newTitle = ''
+      this.isEditingTitle = false
+    },
+    cancelChangeTitle () {
+      this.newTitle = ''
+      this.isEditingTitle = false
+    }
+  },
   components: { MarkdownContent }
 }
 </script>
 
 <style scoped>
 @import url('bulma/css/bulma.css');
+
+.inputBox{
+    margin-left: 5px;
+}
+
+.editedTitle h3{
+    margin-bottom: 0px  !important; 
+    vertical-align: center;
+}
+
+.editedTitle button{
+    margin-left: 3px;
+    margin-top: 5px;
+    vertical-align: center;
+}
 </style>

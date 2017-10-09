@@ -38,5 +38,12 @@ module.exports = {
         })
       }
     }
+  },
+  router: {
+    middleware: 'index'
   }
 }
+
+// db.firstMenu.insert({'id': 0, 'name': '技术 '})
+// db.firstMenu.insert({'id': 1, 'name': '算法 '})
+// db.firstMenu.insert({'id': 2, 'name': '技术 '})

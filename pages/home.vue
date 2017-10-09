@@ -2,7 +2,7 @@
   <section class="hero is-info is-large">
     <!-- Hero header: will stick at the top -->
     <div class="hero-head">
-        <mHeader :href="href" :logo="logo"></mHeader>
+        <MyHeader :href="href" :logo="logo"></MyHeader>
     </div>
 
 
@@ -18,54 +18,31 @@
     </div>
 
     <div class="hero-foot">
-        <hr>
-        <div class="container">
-            <div class="content has-text-centered">
-                <p>
-                    <strong>Bulma</strong> by <a href="http://jgthms.com">Zili Jin</a>. The source code is licensed
-                    <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
-                    is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
-                </p>
-                <p>
-                    <a class="icon" href="https://github.com/jgthms/bulma">
-                    <i class="fa fa-github"></i>
-                    </a>
-                </p>
-            </div>
-        </div>
+        <MyFooter/>
     </div>
-    <!-- Hero footer: will stick at the bottom
-    <div class="hero-foot">
-        <nav class="tabs is-boxed is-fullwidth">
-        <div class="container">
-            <ul>
-                <li v-for="(page, index) in pages" :key="page.id"
-                  :class="{ 'is-active': href == page.href }" @click="href=page.href">
-                    <router-link :to="page.href">
-                        {{ page.name }}
-                    </router-link>
-                </li>
-            </ul>
-        </div>
-        </nav>
-    </div> -->
+
     </section>
 </template>
 
 <script>
-import mHeader from '~/components/Header.vue'
+import MyHeader from '~/components/Header.vue'
+import MyFooter from '~/components/Footer.vue'
 
 export default {
-  async asyncData (context) {
-    let ret = {
+  async asyncData ({ isServer, store, req }) {
+    // if (isServer) {
+    //   store.state.href = req.url
+    // }
+    return {
       logo: 'bulma-type-white'
     }
-    if (context.isServer) {
-      ret.href = context.req.url
-    }
-    return ret
   },
-  components: { mHeader }
+  computed: {
+    href () {
+      return this.$store.state.href
+    }
+  },
+  components: { MyHeader, MyFooter }
 }
 </script>
 

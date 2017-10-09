@@ -1,45 +1,40 @@
 <template>
   <div>
-    <mHeader :href="href" :logo="logo"></mHeader>
-    <div class="tabs is-large is-centered">
-      <ul>
-        <li class="is-active"><a>Pictures</a></li>
-        <li><a>Music</a></li>
-        <li><a>Videos</a></li>
-        <li><a>Documents</a></li>
-      </ul>
-    </div>
+    <MyHeader :href="href" :logo="logo"/>
+    <FirstMenu v-on:firstMenuChanged="refreshSecondMenu"/>
     <div class="container is-fluid">
       <div class="columns">
         <div class="column is-2">
-          <AsideMenu></AsideMenu>
+          <AsideMenu/>
         </div>
         <div class="column">
-          <MarkdownContent rawText="# aaaasd"></MarkdownContent>
+          <MarkdownEditor v-if="isAdmin" :rawText="rawText"/>
+          <MarkdownContent v-else :rawText="rawText"/>
         </div>
       </div> 
     </div>
-
   </div>
 </template>
 
 <script>
-import mHeader from '~/components/Header.vue'
+import MyHeader from '~/components/Header.vue'
+import MyFooter from '~/components/Footer.vue'
+import FirstMenu from '~/components/FirstMenu.vue'
 import AsideMenu from '~/components/AsideMenu.vue'
 import MarkdownContent from '~/components/MarkdownContent.vue'
+import MarkdownEditor from '~/components/MarkdownEditor.vue'
 
 export default {
-  async asyncData (context) {
-    let ret = {
+  async asyncData ({ isServer, store, req }) {
+    return {
+      rawText: `#asd 
+      > asdf`,
       logo: 'bulma-logo'
     }
-    if (context.isServer) {
-      ret.href = context.req.url
-    }
-    return ret
   },
   head () {
     return {
+      title: 'article',
       link: [
         {
           rel: 'stylesheet',
@@ -48,7 +43,20 @@ export default {
       ]
     }
   },
-  components: { mHeader, AsideMenu, MarkdownContent }
+  computed: {
+    href () {
+      return this.$store.state.href
+    },
+    isAdmin () {
+      return this.$store.state.isAdmin
+    }
+  },
+  methods: {
+    refreshSecondMenu (menuId) {
+      // get secondMenu
+    }
+  },
+  components: { MyHeader, MyFooter, FirstMenu, AsideMenu, MarkdownEditor, MarkdownContent }
 }
 </script>
 

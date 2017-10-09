@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer">
+  <div>
     <hr>
     <div class="content has-text-centered">
       <p>
@@ -13,5 +13,11 @@
         </a>
       </p>
     </div>
-  </footer>
+  </div>
 </template>
+
+<style scoped>
+@import url('bulma/css/bulma.css');
+
+</style>
+

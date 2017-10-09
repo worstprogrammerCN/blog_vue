@@ -14,8 +14,8 @@
             </span>
             <div class="nav-right nav-menu">
                 <router-link v-for="(page, index) in pages" :key="page.id"
-                  :to="page.href" 
-                  :class="{ 'is-active' : href == page.href, 'nav-item': true }">
+                  :to="page.href" @click.native="refreshActive(page.href)"
+                  :class="{ 'is-active' : page.href === href, 'nav-item': true }">
                   {{ page.name }}
                 </router-link>
                 <span class="nav-item">
@@ -38,10 +38,17 @@ export default {
   props: ['href', 'logo'],
   data () {
     return {
-      title: 'Hello World.',
-      subtitle: '从群众中来，到群众中去',
-      pages: this.$store.state.pages,
       logoHref: this.logo
+    }
+  },
+  computed: {
+    pages () {
+      return this.$store.state.pages
+    }
+  },
+  methods: {
+    refreshActive (href) {
+      this.$store.state.href = href
     }
   },
   head () {
@@ -52,7 +59,6 @@ export default {
           href: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'
         }
       ]
-
     }
   }
 }

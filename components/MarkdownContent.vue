@@ -1,6 +1,6 @@
 <template>
-    <div class="box">
-        <div class="output" v-html="output"></div>
+    <div class="content">
+      <div class="output" v-html="output"></div>
     </div>
 </template>
 
@@ -10,22 +10,15 @@ var converter = new showdown.Converter()
 
 export default {
   props: ['rawText'],
-  data () {
-    return {
-      output: converter.makeHtml(this.rawText)
-    }
-  },
-  head () {
-    return {
-      script: [ 'https://cdnjs.cloudflare.com/ajax/libs/showdown/1.7.5/showdown.min.js' ]
+  computed: {
+    output: function () {
+      return converter.makeHtml(this.rawText)
     }
   }
 }
 </script>
 
 <style scoped>
-@import url('bulma/css/bulma.css');
-
 .inputBox{
     margin-left: 5px;
 }

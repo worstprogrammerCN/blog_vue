@@ -1,6 +1,12 @@
 # nuxt-express
 
-> Nuxt.js project
+> a personal blog
+
+## dependencies
+
+- nuxt
+- bulma
+- markdownjs
 
 ## Build Setup
 
