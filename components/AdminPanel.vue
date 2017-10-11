@@ -12,6 +12,9 @@
     </template>
     <template v-else-if="state == 'editingMenu'">
       <h1> editingMenu </h1>
+      <p class="control">
+          <button @click="cancelEditMenu" class="button is-primary">结束编辑</button>
+      </p>
     </template>
     <template v-else-if="state == 'viewing'">
       <h1 class="title is-1"> {{ article.title }} </h1>
@@ -49,8 +52,12 @@ export default {
   methods: {
     editMenu () {
       this.state = 'editingMenu'
-      console.log('startEditingMenu')
-      this.$emit('startEditingMenu')
+      console.log('panelStateChanged')
+      this.$emit('panelStateChanged', { 'state': 'editingMenu' })
+    },
+    cancelEditMenu () {
+      this.state = 'main'
+      this.$emit('panelStateChanged', { 'state': 'main' })
     },
     createArticle () {
       this.state = 'creatingArticle'
