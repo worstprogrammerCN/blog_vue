@@ -66,8 +66,19 @@ const store = () => new Vuex.Store({
     isAdmin: true
   },
   mutations: {
-    addFirstMenu (state, menu) {
+    createFirstMenu (state, menu) {
       state.firstMenuList.push(menu)
+    },
+    deleteFirstMenu (state, menu) {
+      if (menu.isActive) {
+        state.secondMenuList = []
+      }
+      state.firstMenuList = state.firstMenuList.filter((firstMenu) => firstMenu.id !== menu.id)
+    },
+    onFirstMenuChanged (state, tMenu) {
+      state.firstMenuList.forEach((menu) => { // 把选中的menu的状态设为激活，其它的设为不激活
+        menu.isActive = menu.id === tMenu.id
+      })
     },
     addSecondMenu (state, menu) {
       state.secondMenuList.push(menu)
@@ -75,9 +86,18 @@ const store = () => new Vuex.Store({
     deleteSecondMenu (state, menuId) {
       state.secondMenuList = state.secondMenuList.filter((menu) => menu.id !== menuId)
     },
+    changeSecondMenuList (state, menu) {
+      state.secondMenuList = menu
+    },
     deleteArticle (state, { secondMenuId, articleId }) {
       let secondMenu = state.secondMenuList.find((menu) => menu.id === secondMenuId)
       secondMenu.articles = secondMenu.articles.filter((article) => article.id !== articleId)
+    },
+    getArticle (state, tArticle) {
+      let menu = state.secondMenuList.find((menu) => menu.id === tArticle.secondMenuId)
+      menu.articles.forEach((article) => {
+        article.isActive = tArticle.id === article.id
+      })
     }
   }
 })

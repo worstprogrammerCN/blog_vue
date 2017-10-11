@@ -3,7 +3,7 @@
     <ul>
       <li v-for="firstMenu in firstMenuList" :key="firstMenu.id"
         :class="{ 'is-active': firstMenu.isActive }">
-        <a>{{ firstMenu.name }}</a>
+        <a @click="changeFirstMenu(firstMenu)">{{ firstMenu.name }}</a>
       </li>
     </ul>
 </div>
@@ -21,6 +21,12 @@ export default {
   computed: {
     firstMenuList () {
       return this.$store.state.firstMenuList
+    }
+  },
+  methods: {
+    changeFirstMenu (firstMenu) {
+      this.$store.commit('onFirstMenuChanged', firstMenu)
+      this.$emit('changeFirstMenu', firstMenu)
     }
   }
 }

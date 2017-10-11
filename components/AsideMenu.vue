@@ -7,7 +7,7 @@
         <ul class="menu-list":key="secondMenu.id">
             <li v-for="article in secondMenu.articles" :key="article.id">
                 <a :class="{'is-active': article.isActive}"
-                  @click="getArticle({ secondMenuId: secondMenu.id, articleId: article.id })">
+                  @click="getArticle(article)">
                   {{ article.title }}
                 </a>
             </li>
@@ -25,14 +25,22 @@ export default {
     }
   },
   methods: {
-    getArticle ({ secondMenuId, articleId }) {
+    getArticle (articleHead) {
+      if (articleHead.isActive) {
+        return
+      }
+
       // getArticle by menu secondMenu and article id
       let article = {
+        firstMenuId: '0',
+        secondMenuId: '0',
+        id: '1',
         title: 'my title got from aside menu',
         content: '# content'
       }
+      this.$store.commit('getArticle', article)
       this.$emit('getArticle', article)
-    },
+    }
   }
 }
 </script>
