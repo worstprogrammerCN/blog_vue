@@ -7,10 +7,10 @@
       <div class="container is-fluid">
         <div class="columns">
           <div class="column is-2">
-            <EditingAsideMenu v-on:getArticle="getArticle"/>
+            <EditingAsideMenu />
           </div>
           <div class="column is-10">
-            <AdminPanel :tArticle="article"/>
+            <AdminPanel />
           </div>
         </div> 
       </div>
@@ -20,10 +20,10 @@
       <div class="container is-fluid">
         <div class="columns">
           <div class="column is-2">
-            <AsideMenu @getArticle="getArticle"/>
+            <AsideMenu />
           </div>
           <div class="column is-10">
-            <AdminPanel :tArticle="article" v-on:panelStateChanged="panelStateChanged"/>
+            <AdminPanel v-on:panelStateChanged="panelStateChanged"/>
           </div>
         </div> 
       </div>
@@ -44,22 +44,10 @@ export default {
   data () {
     return {
       logo: 'bulma-logo',
-      article: {
-        firstMenuId: '0',
-        secondMenuId: '1',
-        id: '1',
-        title: 'title',
-        content: '# original content'
-      },
       isEditing: false
     }
   },
   methods: {
-    getArticle (article) {
-      // post getArticle request
-      console.log(article)
-      this.article = article
-    },
     getSecondMenuList (firstMenu) {
       // post getSecondMenuList request
       console.log(firstMenu.name)
@@ -112,5 +100,8 @@ export default {
 </script>
 
 <style scoped>
+.columns{
+  margin: 0px !important; 
+}
 
 </style>

@@ -17,6 +17,8 @@
     "cross-env": "^5.0.1",
     "express": "^4.15.3",
     "jquery": "^3.2.1",
+    "mongodb": "^2.2.32",
+    "mongoose": "^4.12.1",
     "nuxt": "^1.0.0-rc3",
     "showdown": "^1.7.5",
     "source-map-support": "^0.4.15"

@@ -11,41 +11,54 @@
       </div>
     </template>
     <template v-else-if="state == 'editingMenu'">
-      <h1> editingMenu </h1>
       <p class="control">
           <button @click="cancelEditMenu" class="button is-primary">结束编辑</button>
       </p>
     </template>
     <template v-else-if="state == 'viewing'">
+      <div class="field is-grouped is-grouped-right">
+          <p class="control">
+              <a @click="startEditingArticle" class="button is-primary">
+              编辑
+              </a>
+          </p>
+          <p class="control">
+              <a @click="cancelViewing" class="button is-light">
+              返回主界面
+              </a>
+          </p>
+      </div>
       <h1 class="title is-1"> {{ article.title }} </h1>
       <MarkdownContent :rawText="article.content"></MarkdownContent>
     </template>
     <template v-else-if="state == 'editingArticle'">
-      <h1> editingArticle </h1>
-      <MarkdownContent :rawText="article.content"></MarkdownContent>
+      <EditingArticlePanel v-on:finishEditingArticle="finishEditingArticle"/>
     </template>
     <template v-else-if="state == 'creatingArticle'">
-      <h1> creatingArticle </h1>
-      <MarkdownContent :rawText="article.content"></MarkdownContent>
+      <CreatingArticlePanel v-on:finishCreatingArticle="finishCreatingArticle"/>
     </template>
   </div>  
 </template>
 
 <script>
 import MarkdownContent from '~/components/MarkdownContent.vue'
+import EditingArticlePanel from '~/components/EditingArticlePanel.vue'
+import CreatingArticlePanel from '~/components/CreatingArticlePanel.vue'
 
 export default {
-  props: ['tArticle'],
   data () {
     return {
-      article: this.tArticle,
       state: 'main' // 有菜单主界面状态, 编辑菜单状态, 浏览文章状态, 修改文章状态, 以及新建文章状态
       //               main, editingMenu , viewing, editingArticle, creatingArticle
     }
   },
+  computed: {
+    article () {
+      return this.$store.state.article
+    }
+  },
   watch: {
-    tArticle (val) {
-      this.article = val
+    article (val) {
       this.state = 'viewing'
     }
   },
@@ -61,10 +74,24 @@ export default {
     },
     createArticle () {
       this.state = 'creatingArticle'
+    },
+    finishCreatingArticle () {
+      this.state = 'main'
+    },
+    startEditingArticle () {
+      this.state = 'editingArticle'
+    },
+    finishEditingArticle () {
+      this.state = 'viewing'
+    },
+    cancelViewing () {
+      this.state = 'main'
     }
   },
   components: {
-    MarkdownContent
+    MarkdownContent,
+    EditingArticlePanel,
+    CreatingArticlePanel
   }
 }
 </script>

@@ -1,24 +1,22 @@
 <template>
-    <div class="section">
-      <aside class="menu">
-        <template v-for="secondMenu in secondMenuList">
-          <p class="menu-label" :key="secondMenu.id">
-              <span class="tag is-light">
-                {{ secondMenu.name }}
-                <button class="delete is-small" @click="deleteSecondMenu(secondMenu.id)"></button>
-              </span>
-          </p>
-          <ul class="menu-list":key="secondMenu.id">
-            <li class="tags has-addons" v-for="article in secondMenu.articles" :key="article.id">
-              <span class="tag is-white">
-                {{ article.title }}
-                <button class="delete is-small" @click="deleteArticle(secondMenu.id, article.id)"></button>
-              </span>
-            </li>
-          </ul>
-        </template>
-      </aside> 
-    </div>
+  <aside class="menu">
+    <template v-for="secondMenu in secondMenuList">
+      <p class="menu-label" :key="secondMenu.id">
+          <span class="tag is-light">
+            {{ secondMenu.name }}
+            <button class="delete is-small" @click="deleteSecondMenu(secondMenu.id)"></button>
+          </span>
+      </p>
+      <ul class="menu-list":key="secondMenu.id">
+        <li class="tags has-addons" v-for="article in secondMenu.articles" :key="article.id">
+          <span class="tag is-white">
+            {{ article.title }}
+            <button class="delete is-small" @click="deleteArticle(secondMenu.id, article.id)"></button>
+          </span>
+        </li>
+      </ul>
+    </template>
+  </aside> 
 </template>
 
 <script>

@@ -1,30 +1,28 @@
 <template>
-  <div>
-    <div class="tabs is-centered">
-        <ul>
-            <li v-for="firstMenu in firstMenuList" :key="firstMenu.id"
-             :class="{ 'is-active': firstMenu.isActive}">
-              <a>
-                  <span>{{ firstMenu.name }}</span>
-                  <button @click="deleteFirstMenu( firstMenu )" class="delete is-small"></button>
-              </a>
+  <div class="tabs is-centered">
+      <ul>
+          <li v-for="firstMenu in firstMenuList" :key="firstMenu.id"
+           :class="{ 'is-active': firstMenu.isActive}">
+            <a>
+                <span>{{ firstMenu.name }}</span>
+                <button @click="deleteFirstMenu( firstMenu )" class="delete is-small"></button>
+            </a>
+          </li>
+          <template v-if="isAdding">
+            <li>
+              <input v-model="newFirstMenuName" class="input addingInput" type="text" placeholder="first menu">
+              <button @click="createFirstMenu" class="button is-primary">确定</button>
+              <button @click="cancelCreatingFirstMenu" class="button">取消</button>
+              
             </li>
-            <template v-if="isAdding">
-              <li>
-                <input v-model="newFirstMenuName" class="input addingInput" type="text" placeholder="first menu">
-                <button @click="createFirstMenu" class="button is-primary">确定</button>
-                <button @click="cancelCreatingFirstMenu" class="button">取消</button>
-                
-              </li>
-              <li class="errorMsg">
-                <span>{{ errorMsg }}</span>
-              </li>
-            </template>
-            <li v-else>
-              <button @click="startCreatingFirstMenu" class="button is-primary">新建</button>
+            <li class="errorMsg">
+              <span>{{ errorMsg }}</span>
             </li>
-        </ul>
-    </div>
+          </template>
+          <li v-else>
+            <button @click="startCreatingFirstMenu" class="button is-primary">新建</button>
+          </li>
+      </ul>
   </div>
 </template>
 

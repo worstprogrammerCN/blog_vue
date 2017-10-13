@@ -63,6 +63,13 @@ const store = () => new Vuex.Store({
         isActive: false
       }]
     }],
+    article: {
+      firstMenuId: '0',
+      secondMenuId: '1',
+      id: '1',
+      title: 'title',
+      content: '# original content'
+    },
     isAdmin: true
   },
   mutations: {
@@ -89,15 +96,24 @@ const store = () => new Vuex.Store({
     changeSecondMenuList (state, menu) {
       state.secondMenuList = menu
     },
+    createArticle (state, article) {
+      let secondMenu = state.secondMenuList.find((secondMenu) => secondMenu.id === article.secondMenuId)
+      secondMenu.articles.push({ id: article.id, title: article.title, isActive: false })
+    },
     deleteArticle (state, { secondMenuId, articleId }) {
       let secondMenu = state.secondMenuList.find((menu) => menu.id === secondMenuId)
       secondMenu.articles = secondMenu.articles.filter((article) => article.id !== articleId)
     },
     getArticle (state, tArticle) {
+      state.article = tArticle
       let menu = state.secondMenuList.find((menu) => menu.id === tArticle.secondMenuId)
       menu.articles.forEach((article) => {
         article.isActive = tArticle.id === article.id
       })
+    },
+    editArticle (state, { title, content }) {
+      state.article.title = title
+      state.article.content = content
     }
   }
 })

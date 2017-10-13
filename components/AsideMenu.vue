@@ -29,7 +29,6 @@ export default {
       if (articleHead.isActive) {
         return
       }
-
       // getArticle by menu secondMenu and article id
       let article = {
         firstMenuId: '0',
@@ -39,7 +38,6 @@ export default {
         content: '# content'
       }
       this.$store.commit('getArticle', article)
-      this.$emit('getArticle', article)
     }
   }
 }
