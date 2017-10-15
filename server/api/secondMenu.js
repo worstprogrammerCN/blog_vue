@@ -17,26 +17,26 @@ router.put('/secondMenu', async function (req, res, next) {
   let firstMenuId = secondMenu.firstMenuId
   secondMenu.articles = []
 
+  // add secondMenu to collections
   let secondMenuModel = await new SecondMenu(secondMenu).save()
   console.log(secondMenuModel)
-  let r = 
-    await FirstMenu.update({ _id: firstMenuId },
-      { '$addToSet': { 'secondMenuList': secondMenuModel._id } }  
-    ).catch(err => err)
 
+  // add secondMenu to firstMenu.secondMenuList
+  let r = await FirstMenu.update({ _id: firstMenuId },
+      { '$addToSet': { 'secondMenuList': secondMenuModel._id } })
   console.log(r)
-  res.json({ ok: true })
+
+  res.json({ ok: true, _id: secondMenuModel._id })
 })
 
-router.delete('/secondMenu/:id', function (req, res, next) {
+router.delete('/secondMenu/:id', async function (req, res, next) {
   let _id = req.params.id
 
-  SecondMenu.remove({ _id }).then(r => {
-    if (r.result.n == 0) {
-      res.json({ ok: false })
-    }
-    res.json({ ok: true })
-  })
+  let r1 = await SecondMenu.remove({ _id })
+  let r2 = await FirstMenu.update({ 'secondMenuList': _id }, { $pull: { 'secondMenuList': _id } })
+  let r3 = await Article.remove({ firstMenuId: _id })
+
+  res.json({ ok: true })
 })
 
 export default router

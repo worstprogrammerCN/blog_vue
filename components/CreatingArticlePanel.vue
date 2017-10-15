@@ -2,7 +2,7 @@
   <div>
     <div class="field is-grouped is-grouped-right">
         <p class="control">
-            <a @click="createArticle" class="button is-primary" :disabled="isCreatable">
+            <a @click="createArticle" class="button is-primary" :disabled="!isCreatable">
             发布
             </a>
         </p>
@@ -16,17 +16,17 @@
       <ul>
         <li>
           <div class="select">
-            <select v-model="selectedFirstMenuId">
-              <option v-for="firstMenu in firstMenuList" :value="firstMenu.id">
+            <select v-model="selectedFirstMenu">
+              <option v-for="firstMenu in firstMenuList" :value="firstMenu">
                 {{ firstMenu.name }}
               </option>
             </select>
           </div>
         </li>
         <li>
-          <div class="select">
-            <select  v-model="selectedSecondMenuId">
-              <option v-for="secondMenu in secondMenuList" :value="secondMenu.id">
+          <div class="select" v-if="selectedSecondMenu">
+            <select v-model="selectedSecondMenu">
+              <option v-for="secondMenu in selectedFirstMenu.secondMenuList" :value="secondMenu">
                 {{ secondMenu.name }}
               </option>
             </select>
@@ -35,7 +35,11 @@
       </ul>
     </nav>
 
-    <span>{{ selectedFirstMenu }}</span>
+    <span>selectedFirstMenu {{ selectedFirstMenu }}</span>
+
+    <p v-if="selectedSecondMenu">selectedFirstMenu.secondMenuList {{ selectedFirstMenu.secondMenuList }}</p>
+    <p>selectedSecondMenu {{ selectedSecondMenu }} </p>
+    <p> isCreatable: {{ !!this.selectedFirstMenu && !!this.selectedSecondMenu }} </p>
 
     <div class="field">
       <label class="label">Title</label>
@@ -63,40 +67,54 @@
 
 <script>
 import MarkdownContent from '~/components/MarkdownContent.vue'
+import axios from 'axios'
 
 export default {
   data () {
+    let fId = null
+    let sId = null
+    if (this.$store.state.firstMenuList) {
+      fId = this.$store.state.firstMenuList[0]
+    }
+    if (this.$store.state.secondMenuList) {
+      sId = this.$store.state.secondMenuList[0]
+    }
     return {
+      api: 'http://localhost:3000/api/article',
       title: '',
       content: '',
-      selectedFirstMenuId: this.$store.state.firstMenuList[0].id,
-      selectedSecondMenuId: this.$store.state.secondMenuList[0].id
+      selectedFirstMenu: fId,
+      selectedSecondMenu: sId
     }
   },
   computed: {
     firstMenuList () {
-      return this.$store.state.firstMenuList
+      return this.$store.state.leveledMenu
     },
     secondMenuList () {
       return this.$store.state.secondMenuList
     },
     isCreatable () {
-      return this.firstMenuList.length > 0 &&
-        this.secondMenuList.length > 0
+      return !!this.selectedFirstMenu && !!this.selectedSecondMenu
     }
   },
   methods: {
     createArticle () {
+      if (!this.isCreatable) {
+        return
+      }
       let article = {
-        firstMenuId: this.selectedFirstMenuId,
-        secondMenuId: this.selectedSecondMenuId,
-        id: '4',
+        firstMenuId: this.selectedFirstMenu._id,
+        secondMenuId: this.selectedSecondMenu._id,
         title: this.title,
         content: this.content
       }
-      // if post success
-      this.$store.commit('createArticle', article)
-      this.$emit('finishCreatingArticle')
+      axios.put(this.api, { article }).then(({ data }) => {
+        if (data.ok) {
+          this.$store.commit('createArticle', article)
+          this.$emit('finishCreatingArticle')
+        }
+      })
     },
     cancelCreateArticle () {
       this.$emit('finishCreatingArticle')

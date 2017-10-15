@@ -39,6 +39,7 @@ const store = () => new Vuex.Store({
       title: 'title',
       content: '# original content'
     },
+    leveledMenu: null,
     isAdmin: true
   },
   mutations: {
@@ -58,7 +59,6 @@ const store = () => new Vuex.Store({
       state.firstMenuList.forEach((menu, index) => { // 把选中的menu的状态设为激活，其它的设为不激活
         menu.isActive = menu._id === tMenu._id
         state.firstMenuList.splice(index, 1, menu)
-        console.log(menu.isActive)
       })
     },
     createSecondMenu (state, menu) {
@@ -71,7 +71,14 @@ const store = () => new Vuex.Store({
       state.secondMenuList = menuList
     },
     createArticle (state, article) {
+      if (!state.secondMenuList) {
+        return
+      }
+      console.log(state.secondMenuList)
       let secondMenu = state.secondMenuList.find((secondMenu) => secondMenu._id === article.secondMenuId)
+      if (!secondMenu) {
+        return
+      }
       secondMenu.articles.push({ _id: article._id, title: article.title, isActive: false })
     },
     deleteArticle (state, { secondMenuId, articleId }) {
@@ -80,9 +87,13 @@ const store = () => new Vuex.Store({
     },
     getArticle (state, tArticle) {
       state.article = tArticle
-      let menu = state.secondMenuList.find((menu) => menu._id === tArticle.secondMenuId)
-      menu.articles.forEach((article) => {
-        article.isActive = tArticle._id === article._id
+      // let menu = state.secondMenuList.find((menu) => menu._id === tArticle.secondMenuId)
+      state.secondMenuList.forEach((menu, secondMenuIndex) => {
+        menu.articles.forEach((article, index) => {
+          article.isActive = article._id === tArticle._id && tArticle.secondMenuId === menu._id
+          menu.articles.splice(index, 1, article)
+        })
+        state.secondMenuList.splice(secondMenuIndex, 1, menu)
       })
     },
     editArticle (state, { title, content }) {

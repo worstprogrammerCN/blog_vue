@@ -17,27 +17,31 @@
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
+  data () {
+    return {
+      api: 'http://localhost:3000/api/article'
+    }
+  },
   computed: {
     secondMenuList () {
       return this.$store.state.secondMenuList
     }
   },
   methods: {
-    getArticle (articleHead) {
+    async getArticle (articleHead) {
+      let _id = articleHead._id
       if (articleHead.isActive) {
         return
       }
-      // getArticle by menu secondMenu and article id
-      let article = {
-        firstMenuId: '0',
-        secondMenuId: '0',
-        id: '1',
-        title: 'my title got from aside menu',
-        content: '# content'
+      let { data } = await axios.get(this.api, { params: { _id } })
+      let ok = data.ok
+      let article = data.article
+      if (ok) {
+        this.$store.commit('getArticle', article)
       }
-      this.$store.commit('getArticle', article)
     }
   }
 }

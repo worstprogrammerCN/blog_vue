@@ -6,7 +6,7 @@
           <button @click="editMenu" class="button is-primary">编辑菜单</button>
         </p>
         <p class="control">
-          <button @click="createArticle" class="button">写文章</button>
+          <button @click="startCreatingArticle" class="button">写文章</button>
         </p>
       </div>
     </template>
@@ -45,6 +45,8 @@ import MarkdownContent from '~/components/MarkdownContent.vue'
 import EditingArticlePanel from '~/components/EditingArticlePanel.vue'
 import CreatingArticlePanel from '~/components/CreatingArticlePanel.vue'
 
+import axios from 'axios'
+
 export default {
   data () {
     return {
@@ -72,8 +74,12 @@ export default {
       this.state = 'main'
       this.$emit('panelStateChanged', { 'state': 'main' })
     },
-    createArticle () {
+    async startCreatingArticle () {
       this.state = 'creatingArticle'
+      await axios.get('http://localhost:3000/api/leveledMenu').then((res) => {
+        this.$store.state.leveledMenu = res.data
+        return {}
+      })
     },
     finishCreatingArticle () {
       this.state = 'main'

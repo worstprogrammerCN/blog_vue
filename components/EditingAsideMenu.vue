@@ -49,20 +49,18 @@ export default {
     }
   },
   methods: {
-    deleteSecondMenu (secondMenuId) {
+    async deleteSecondMenu (secondMenuId) {
       // delete all articles from list
       // delete the menu
       // post delete request
-      axios.delete(`${this.api}/${secondMenuId}`)
-        .then(({ data }) => {
-          let ok = data.ok
-          if (!ok) {
-            console.log('delete menu failed')
-          } else {
-            console.log('delete article', secondMenuId)
-            this.$store.commit('deleteSecondMenu', secondMenuId) // if delete success
-          }
-        })
+      let { data } = await axios.delete(`${this.api}/${secondMenuId}`)
+      let ok = data.ok
+      if (!ok) {
+        console.log('delete menu failed')
+      } else {
+        console.log('delete article', secondMenuId)
+        this.$store.commit('deleteSecondMenu', secondMenuId) // if delete success
+      }
     },
     deleteArticle (secondMenuId, articleId) {
       // post delete request
@@ -74,21 +72,18 @@ export default {
       this.isAdding = true
       this.newSecondMenuName = ''
     },
-    createSecondMenu () {
+    async createSecondMenu () {
       let firstMenuId = this.firstMenuId
 
-      axios.put(this.api,
-        { secondMenu: { firstMenuId, name: this.newSecondMenuName } })
-        .then(res => {
-          let ok = res.data.ok
-          let _id = res.data._id
-          if (!ok) {
-            console.log('failed')
-          } else {
-            this.isAdding = false
-            this.$store.commit('createSecondMenu', { _id, name: this.newSecondMenuName, isActive: false })
-          }
-        })
+      let { data } = await axios.put(this.api, { secondMenu: { firstMenuId, name: this.newSecondMenuName } })
+      let ok = data.ok
+      let _id = data._id
+      if (!ok) {
+        console.log('failed')
+      } else {
+        this.isAdding = false
+        this.$store.commit('createSecondMenu', { _id, name: this.newSecondMenuName, isActive: false })
+      }
     },
     cancelCreatingSecondMenu () {
       this.isAdding = false
