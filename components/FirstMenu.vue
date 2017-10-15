@@ -1,7 +1,7 @@
 <template>
   <div class="tabs is-centered">
     <ul>
-      <li v-for="firstMenu in firstMenuList" :key="firstMenu.id"
+      <li v-for="firstMenu in firstMenuList" :key="firstMenu._id"
         :class="{ 'is-active': firstMenu.isActive }">
         <a @click="changeFirstMenu(firstMenu)">{{ firstMenu.name }}</a>
       </li>

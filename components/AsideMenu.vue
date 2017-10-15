@@ -1,11 +1,11 @@
 <template>
     <aside class="menu">
       <template v-for="secondMenu in secondMenuList">
-        <p class="menu-label" :key="secondMenu.id">
+        <p class="menu-label" :key="secondMenu._id">
             {{ secondMenu.name }}
         </p>
-        <ul class="menu-list":key="secondMenu.id">
-            <li v-for="article in secondMenu.articles" :key="article.id">
+        <ul class="menu-list":key="secondMenu._id">
+            <li v-for="article in secondMenu.articles" :key="article._id">
                 <a :class="{'is-active': article.isActive}"
                   @click="getArticle(article)">
                   {{ article.title }}

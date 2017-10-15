@@ -2,7 +2,7 @@
   <div>
     <div class="field is-grouped is-grouped-right">
         <p class="control">
-            <a @click="createArticle" class="button is-primary">
+            <a @click="createArticle" class="button is-primary" :disabled="isCreatable">
             发布
             </a>
         </p>
@@ -79,6 +79,10 @@ export default {
     },
     secondMenuList () {
       return this.$store.state.secondMenuList
+    },
+    isCreatable () {
+      return this.firstMenuList.length > 0 &&
+        this.secondMenuList.length > 0
     }
   },
   methods: {

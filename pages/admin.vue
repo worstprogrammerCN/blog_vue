@@ -39,40 +39,47 @@ import EditingFirstMenu from '~/components/EditingFirstMenu.vue'
 import EditingAsideMenu from '~/components/EditingAsideMenu.vue'
 import AdminPanel from '~/components/AdminPanel.vue'
 
+import axios from 'axios'
+
 // 有编辑菜单状态, 浏览文章状态, 修改文章状态, 以及新建文章状态
 export default {
+  async asyncData ({ store }) {
+    let firstMenuAPI = 'http://localhost:3000/api/firstMenu'
+    return axios.get(firstMenuAPI).then(res => {
+      let firstMenuList = res.data
+      firstMenuList.forEach((menu) => {
+        menu.active = false
+      })
+      store.commit('setFirstMenuList', firstMenuList)
+      return {}
+    }).catch((err) => {
+      console.log(err)
+      return {}
+    })
+  },
   data () {
     return {
       logo: 'bulma-logo',
-      isEditing: false
+      isEditing: false,
+      secondMenuAPI: 'http://localhost:3000/api/secondMenu'
     }
   },
   methods: {
     getSecondMenuList (firstMenu) {
       // post getSecondMenuList request
-      console.log(firstMenu.name)
-      let secondMenuList = [{
-        id: '0',
-        name: 'second menu1',
-        articles: [{
-          id: '0',
-          title: 'vue article1',
-          isActive: false
-        }, {
-          id: '1',
-          title: 'vue article2',
-          isActive: false
-        }]
-      }, {
-        id: '1',
-        name: 'menu 2',
-        articles: [{
-          id: '0',
-          title: 'nuxt article1',
-          isActive: false
-        }]
-      }]
-      this.$store.commit('changeSecondMenuList', secondMenuList)
+      console.log(firstMenu._id)
+      axios.get(this.secondMenuAPI, { params: { firstMenuId: firstMenu._id } })
+        .then(res => {
+          let ok = res.data.ok
+          let secondMenuList = res.data.secondMenuList
+
+          if (!ok) {
+            console.log('failed get secondMenuList')
+          } else {
+            this.$store.state.firstMenuId = firstMenu._id
+            this.$store.commit('setSecondMenuList', secondMenuList)
+          }
+        })
     },
     panelStateChanged ({ state }) {
       switch (state) {

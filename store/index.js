@@ -29,86 +29,60 @@ const store = () => new Vuex.Store({
         'isActive': false
       }
     ],
-    firstMenuList: [{
-      name: '技术',
-      id: '0',
-      isActive: true
-    }, {
-      name: '算法',
-      id: '1',
-      isActive: false
-    }, {
-      name: '资源',
-      id: '2',
-      isActive: false
-    }],
-    secondMenuList: [{
-      id: '0',
-      name: 'vue',
-      articles: [{
-        id: '0',
-        title: 'vue first article',
-        isActive: true
-      }, {
-        id: '1',
-        title: 'vue second article',
-        isActive: false
-      }]
-    }, {
-      id: '1',
-      name: 'nuxt',
-      articles: [{
-        id: '0',
-        title: 'nuxt first article',
-        isActive: false
-      }]
-    }],
+    firstMenuId: null,
+    firstMenuList: null,
+    secondMenuList: null,
     article: {
       firstMenuId: '0',
       secondMenuId: '1',
-      id: '1',
+      _id: '1',
       title: 'title',
       content: '# original content'
     },
     isAdmin: true
   },
   mutations: {
+    setFirstMenuList (state, menuList) {
+      state.firstMenuList = menuList
+    },
     createFirstMenu (state, menu) {
       state.firstMenuList.push(menu)
     },
     deleteFirstMenu (state, menu) {
       if (menu.isActive) {
-        state.secondMenuList = []
+        state.secondMenuList = null
       }
-      state.firstMenuList = state.firstMenuList.filter((firstMenu) => firstMenu.id !== menu.id)
+      state.firstMenuList = state.firstMenuList.filter((firstMenu) => firstMenu._id !== menu._id)
     },
     onFirstMenuChanged (state, tMenu) {
-      state.firstMenuList.forEach((menu) => { // 把选中的menu的状态设为激活，其它的设为不激活
-        menu.isActive = menu.id === tMenu.id
+      state.firstMenuList.forEach((menu, index) => { // 把选中的menu的状态设为激活，其它的设为不激活
+        menu.isActive = menu._id === tMenu._id
+        state.firstMenuList.splice(index, 1, menu)
+        console.log(menu.isActive)
       })
     },
-    addSecondMenu (state, menu) {
+    createSecondMenu (state, menu) {
       state.secondMenuList.push(menu)
     },
     deleteSecondMenu (state, menuId) {
-      state.secondMenuList = state.secondMenuList.filter((menu) => menu.id !== menuId)
+      state.secondMenuList = state.secondMenuList.filter((menu) => menu._id !== menuId)
     },
-    changeSecondMenuList (state, menu) {
-      state.secondMenuList = menu
+    setSecondMenuList (state, menuList) {
+      state.secondMenuList = menuList
     },
     createArticle (state, article) {
-      let secondMenu = state.secondMenuList.find((secondMenu) => secondMenu.id === article.secondMenuId)
-      secondMenu.articles.push({ id: article.id, title: article.title, isActive: false })
+      let secondMenu = state.secondMenuList.find((secondMenu) => secondMenu._id === article.secondMenuId)
+      secondMenu.articles.push({ _id: article._id, title: article.title, isActive: false })
     },
     deleteArticle (state, { secondMenuId, articleId }) {
-      let secondMenu = state.secondMenuList.find((menu) => menu.id === secondMenuId)
-      secondMenu.articles = secondMenu.articles.filter((article) => article.id !== articleId)
+      let secondMenu = state.secondMenuList.find((menu) => menu._id === secondMenuId)
+      secondMenu.articles = secondMenu.articles.filter((article) => article._id !== articleId)
     },
     getArticle (state, tArticle) {
       state.article = tArticle
-      let menu = state.secondMenuList.find((menu) => menu.id === tArticle.secondMenuId)
+      let menu = state.secondMenuList.find((menu) => menu._id === tArticle.secondMenuId)
       menu.articles.forEach((article) => {
-        article.isActive = tArticle.id === article.id
+        article.isActive = tArticle._id === article._id
       })
     },
     editArticle (state, { title, content }) {

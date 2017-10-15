@@ -1,30 +1,51 @@
 <template>
   <aside class="menu">
     <template v-for="secondMenu in secondMenuList">
-      <p class="menu-label" :key="secondMenu.id">
+      <p class="menu-label" :key="secondMenu._id">
           <span class="tag is-light">
             {{ secondMenu.name }}
-            <button class="delete is-small" @click="deleteSecondMenu(secondMenu.id)"></button>
+            <button class="delete is-small" @click="deleteSecondMenu(secondMenu._id)"></button>
           </span>
       </p>
       <ul class="menu-list":key="secondMenu.id">
-        <li class="tags has-addons" v-for="article in secondMenu.articles" :key="article.id">
+        <li class="tags has-addons" v-for="article in secondMenu.articles" :key="article._id">
           <span class="tag is-white">
             {{ article.title }}
-            <button class="delete is-small" @click="deleteArticle(secondMenu.id, article.id)"></button>
+            <button class="delete is-small" @click="deleteArticle( secondMenu._id, article._id)"></button>
           </span>
         </li>
       </ul>
+    </template>
+    <template v-if="secondMenuList">
+      <p class="menu-label" v-if="isAdding">
+        <input v-model="newSecondMenuName" class="input addingInput" type="text" placeholder="second menu">
+        <button @click="createSecondMenu" class="button is-primary">确定</button>
+        <button @click="cancelCreatingSecondMenu" class="button">取消</button>
+      </p>
+      <p class="menu-label" v-else>
+        <button class="button is-primary" @click="startCreatingSecondMenu">新建</button>
+      </p>
     </template>
   </aside> 
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
+  data () {
+    return {
+      isAdding: false,
+      newSecondMenuName: '',
+      api: 'http://localhost:3000/api/secondMenu'
+    }
+  },
   computed: {
     secondMenuList () {
       return this.$store.state.secondMenuList
+    },
+    firstMenuId () {
+      return this.$store.state.firstMenuId
     }
   },
   methods: {
@@ -32,14 +53,45 @@ export default {
       // delete all articles from list
       // delete the menu
       // post delete request
-      console.log('delete article', secondMenuId)
-      this.$store.commit('deleteSecondMenu', secondMenuId) // if delete success
+      axios.delete(`${this.api}/${secondMenuId}`)
+        .then(({ data }) => {
+          let ok = data.ok
+          if (!ok) {
+            console.log('delete menu failed')
+          } else {
+            console.log('delete article', secondMenuId)
+            this.$store.commit('deleteSecondMenu', secondMenuId) // if delete success
+          }
+        })
     },
     deleteArticle (secondMenuId, articleId) {
       // post delete request
       // delete article from list
-      console.log('delete article', secondMenuId, articleId)
+      console.log('delete article', articleId)
       this.$store.commit('deleteArticle', { secondMenuId, articleId }) // if delete success
+    },
+    startCreatingSecondMenu () {
+      this.isAdding = true
+      this.newSecondMenuName = ''
+    },
+    createSecondMenu () {
+      let firstMenuId = this.firstMenuId
+
+      axios.put(this.api,
+        { secondMenu: { firstMenuId, name: this.newSecondMenuName } })
+        .then(res => {
+          let ok = res.data.ok
+          let _id = res.data._id
+          if (!ok) {
+            console.log('failed')
+          } else {
+            this.isAdding = false
+            this.$store.commit('createSecondMenu', { _id, name: this.newSecondMenuName, isActive: false })
+          }
+        })
+    },
+    cancelCreatingSecondMenu () {
+      this.isAdding = false
     }
   }
 }

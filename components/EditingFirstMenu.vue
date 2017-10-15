@@ -1,7 +1,7 @@
 <template>
   <div class="tabs is-centered">
       <ul>
-          <li v-for="firstMenu in firstMenuList" :key="firstMenu.id"
+          <li v-for="firstMenu in firstMenuList" :key="firstMenu._id"
            :class="{ 'is-active': firstMenu.isActive}">
             <a>
                 <span>{{ firstMenu.name }}</span>
@@ -27,13 +27,15 @@
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
   data () {
     return {
       isAdding: false,
       newFirstMenuName: '',
-      errorMsg: ''
+      errorMsg: '',
+      api: 'http://localhost:3000/api/firstMenu'
     }
   },
   computed: {
@@ -55,22 +57,36 @@ export default {
       // post create request
       // ...
       // if seccuess
-      this.isAdding = false
-      console.log('post ', this.newFirstMenuName)
+      axios.put(this.api, { firstMenu: { name: this.newFirstMenuName } })
+        .then((res) => {
+          let ok = res.data.ok
+          let _id = res.data._id
+          if (!ok) {
+            console.log('things wrong!')
+            return
+          }
+          this.isAdding = false
 
-      let newFirstMenu = {
-        name: this.newFirstMenuName,
-        id: '4',
-        isActive: false
-      }
-      this.$store.commit('createFirstMenu', newFirstMenu)
+          let newFirstMenu = {
+            name: this.newFirstMenuName,
+            _id,
+            isActive: false
+          }
+          this.$store.commit('createFirstMenu', newFirstMenu)
+        })
     },
     cancelCreatingFirstMenu () {
       this.isAdding = false
     },
     deleteFirstMenu (menu) {
-      this.$store.commit('deleteFirstMenu', menu) // delete secondMenu
-      console.log('deleteFirstMenu')
+      axios.delete(`${this.api}/${menu._id}`)
+        .then((res) => {
+          if (!res.data.ok) {
+            console.log('fail!')
+          } else {
+            this.$store.commit('deleteFirstMenu', menu) // delete secondMenu
+          }
+        })
     }
   }
 }

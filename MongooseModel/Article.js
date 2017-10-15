@@ -1,8 +1,19 @@
 var mongoose = require('mongoose');
 
-var ArticleSchema = mongoose.Schema({
-    title: String,
-    content: String
+var Schema = mongoose.Schema,
+  ObjectId = Schema.ObjectId
+var ArticleSchema = new Schema({
+  firstMenuId: {
+    type: ObjectId,
+    ref: 'FirstMenu'
+  }
+  ,
+  secondMenuId: {
+    type: ObjectId,
+    ref: 'SecondMenu'
+  },
+  title: String,
+  content: String
 })
 
-var Article = mongoose.model('Article', ArticleSchema)
+export default mongoose.model('Article', ArticleSchema)
