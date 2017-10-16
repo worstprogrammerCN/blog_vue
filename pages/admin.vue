@@ -67,7 +67,6 @@ export default {
   methods: {
     getSecondMenuList (firstMenu) {
       // post getSecondMenuList request
-      console.log(firstMenu._id)
       axios.get(this.secondMenuAPI, { params: { firstMenuId: firstMenu._id } })
         .then(res => {
           let ok = res.data.ok

@@ -20,9 +20,9 @@ router.put('/firstMenu', async function (req, res, next) {
 
 router.delete('/firstMenu/:id', async function (req, res, next) {
   let _id = req.params.id
-  let r1 = await FirstMenu.remove({ _id })
-  let r2 = await SecondMenu.remove({ firstMenuId: _id })
-  let r3 = await Article.remove({ firstMenuId: _id })
+  let r1 = await FirstMenu.remove({ _id }) // 删除一级菜单
+  let r2 = await SecondMenu.remove({ firstMenuId: _id }) // 删除其下的二级菜单
+  let r3 = await Article.remove({ firstMenuId: _id }) // 删除其下的文章
   res.json({ ok: true })
 })
 

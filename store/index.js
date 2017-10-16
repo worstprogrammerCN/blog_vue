@@ -29,7 +29,8 @@ const store = () => new Vuex.Store({
         'isActive': false
       }
     ],
-    firstMenuId: null,
+    activeFirstMenuId: null,
+    activeArticleId: null,
     firstMenuList: null,
     secondMenuList: null,
     article: {
@@ -46,7 +47,7 @@ const store = () => new Vuex.Store({
     setFirstMenuList (state, menuList) {
       state.firstMenuList = menuList
     },
-    createFirstMenu (state, menu) {
+    createFirstMenu (state, menu) { // push a newly created first menu
       state.firstMenuList.push(menu)
     },
     deleteFirstMenu (state, menu) {

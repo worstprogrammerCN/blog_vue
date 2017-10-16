@@ -110,6 +110,7 @@ export default {
         content: this.content
       }
       axios.put(this.api, { article }).then(({ data }) => {
+        article._id = data._id
         if (data.ok) {
           this.$store.commit('createArticle', article)
           this.$emit('finishCreatingArticle')

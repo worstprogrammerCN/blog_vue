@@ -37,7 +37,8 @@ export default {
     return {
       isAdding: false,
       newSecondMenuName: '',
-      api: 'http://localhost:3000/api/secondMenu'
+      secondMenuApi: 'http://localhost:3000/api/secondMenu',
+      articleApi: 'http://localhost:3000/api/article'
     }
   },
   computed: {
@@ -53,7 +54,7 @@ export default {
       // delete all articles from list
       // delete the menu
       // post delete request
-      let { data } = await axios.delete(`${this.api}/${secondMenuId}`)
+      let { data } = await axios.delete(`${this.secondMenuApi}/${secondMenuId}`)
       let ok = data.ok
       if (!ok) {
         console.log('delete menu failed')
@@ -62,11 +63,11 @@ export default {
         this.$store.commit('deleteSecondMenu', secondMenuId) // if delete success
       }
     },
-    deleteArticle (secondMenuId, articleId) {
-      // post delete request
-      // delete article from list
-      console.log('delete article', articleId)
-      this.$store.commit('deleteArticle', { secondMenuId, articleId }) // if delete success
+    async deleteArticle (secondMenuId, articleId) {
+      let { data } = await axios.delete(`${this.articleApi}/${articleId}`)
+      if (data.ok) {
+        this.$store.commit('deleteArticle', { secondMenuId, articleId })
+      }
     },
     startCreatingSecondMenu () {
       this.isAdding = true
@@ -75,7 +76,7 @@ export default {
     async createSecondMenu () {
       let firstMenuId = this.firstMenuId
 
-      let { data } = await axios.put(this.api, { secondMenu: { firstMenuId, name: this.newSecondMenuName } })
+      let { data } = await axios.put(this.secondMenuApi, { secondMenu: { firstMenuId, name: this.newSecondMenuName } })
       let ok = data.ok
       let _id = data._id
       if (!ok) {

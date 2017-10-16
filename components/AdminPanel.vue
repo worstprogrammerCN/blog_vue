@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="topPanel container">
     <template v-if="state === 'main'">
       <div class="field is-grouped">
         <p class="control">
@@ -103,5 +103,8 @@ export default {
 </script>
 
 <style scoped>
-
+.topPanel{
+  margin-right: 0px;
+  width: 100%;
+}
 </style>

@@ -28,12 +28,14 @@
 
 <script>
 import MarkdownContent from '~/components/MarkdownContent.vue'
+import axios from 'axios'
 
 export default {
   data () {
     return {
       title: this.$store.state.article.title,
-      content: this.$store.state.article.content
+      content: this.$store.state.article.content,
+      api: 'http://localhost:3000/api/article'
     }
   },
   computed: {
@@ -43,8 +45,21 @@ export default {
   },
   methods: {
     upload () {
-      this.$store.commit('editArticle', { title: this.title, content: this.content })
-      this.$emit('finishEditingArticle')
+      axios.post(this.api,
+        {
+          article:
+            {
+              _id: this.article._id,
+              title: this.title,
+              content: this.content
+            }
+        }
+      ).then(({ data }) => {
+        if (data.ok) {
+          this.$store.commit('editArticle', { title: this.title, content: this.content })
+          this.$emit('finishEditingArticle')
+        }
+      })
     },
     cancelUpload () {
       console.log('取消编辑')
@@ -58,6 +73,7 @@ export default {
 </script>
 
 <style scoped>
+
 .MarkdownEditor {
   margin-top: 10px;
 }
