@@ -2,7 +2,7 @@
   <div class="tabs is-centered">
       <ul>
           <li v-for="firstMenu in firstMenuList" :key="firstMenu._id"
-           :class="{ 'is-active': firstMenu.isActive}">
+           :class="{ 'is-active': firstMenu._id === activeFirstMenu._id }">
             <a>
                 <span>{{ firstMenu.name }}</span>
                 <button @click="deleteFirstMenu( firstMenu )" class="delete is-small"></button>
@@ -41,6 +41,9 @@ export default {
   computed: {
     firstMenuList () {
       return this.$store.state.firstMenuList
+    },
+    activeFirstMenu () {
+      return this.$store.state.activeFirstMenu
     }
   },
   methods: {
@@ -54,9 +57,7 @@ export default {
         this.errorMsg = 'should not be empty!'
         return
       }
-      // post create request
-      // ...
-      // if seccuess
+
       axios.put(this.api, { firstMenu: { name: this.newFirstMenuName } })
         .then((res) => {
           let ok = res.data.ok

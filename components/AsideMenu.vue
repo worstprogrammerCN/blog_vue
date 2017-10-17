@@ -6,7 +6,7 @@
         </p>
         <ul class="menu-list":key="secondMenu._id">
             <li v-for="article in secondMenu.articles" :key="article._id">
-                <a :class="{'is-active': article.isActive}"
+                <a :class="{'is-active': article._id === activeArticle._id}"
                   @click="getArticle(article)">
                   {{ article.title }}
                 </a>
@@ -28,20 +28,24 @@ export default {
   computed: {
     secondMenuList () {
       return this.$store.state.secondMenuList
+    },
+    activeArticle () {
+      return this.$store.state.activeArticle
     }
   },
   methods: {
-    async getArticle (articleHead) {
+    getArticle (articleHead) {
       let _id = articleHead._id
-      if (articleHead.isActive) {
+      if (articleHead._id === this.activeArticle._id) {
         return
       }
-      let { data } = await axios.get(this.api, { params: { _id } })
-      let ok = data.ok
-      let article = data.article
-      if (ok) {
-        this.$store.commit('getArticle', article)
-      }
+      axios.get(this.api, { params: { _id } }).then(({ data }) => {
+        let ok = data.ok
+        let article = data.article
+        if (ok) {
+          this.$store.commit('setActiveArticle', article)
+        }
+      })
     }
   }
 }

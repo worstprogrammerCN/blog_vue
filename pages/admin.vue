@@ -16,14 +16,14 @@
       </div>
     </template>
     <template v-else>
-      <FirstMenu v-on:changeFirstMenu="getSecondMenuList"/>
+      <FirstMenu />
       <div class="container is-fluid">
         <div class="columns">
           <div class="column is-2">
             <AsideMenu />
           </div>
           <div class="column is-10">
-            <AdminPanel v-on:panelStateChanged="panelStateChanged"/>
+            <AdminPanel />
           </div>
         </div> 
       </div>
@@ -59,39 +59,12 @@ export default {
   },
   data () {
     return {
-      logo: 'bulma-logo',
-      isEditing: false,
-      secondMenuAPI: 'http://localhost:3000/api/secondMenu'
+      logo: 'bulma-logo'
     }
   },
-  methods: {
-    getSecondMenuList (firstMenu) {
-      // post getSecondMenuList request
-      axios.get(this.secondMenuAPI, { params: { firstMenuId: firstMenu._id } })
-        .then(res => {
-          let ok = res.data.ok
-          let secondMenuList = res.data.secondMenuList
-
-          if (!ok) {
-            console.log('failed get secondMenuList')
-          } else {
-            this.$store.state.firstMenuId = firstMenu._id
-            this.$store.commit('setSecondMenuList', secondMenuList)
-          }
-        })
-    },
-    panelStateChanged ({ state }) {
-      switch (state) {
-        case 'editingMenu': {
-          this.isEditing = true
-          console.log('startEditingMenu!')
-          break
-        }
-        default: {
-          this.isEditing = false
-          break
-        }
-      }
+  computed: {
+    isEditing () {
+      return this.$store.state.adminPageState === 'editingMenu'
     }
   },
   components: {

@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import axios from 'axios'
+
 Vue.use(Vuex)
 
 const store = () => new Vuex.Store({
@@ -29,77 +31,93 @@ const store = () => new Vuex.Store({
         'isActive': false
       }
     ],
-    activeFirstMenuId: null,
-    activeArticleId: null,
-    firstMenuList: null,
-    secondMenuList: null,
-    article: {
-      firstMenuId: '0',
-      secondMenuId: '1',
-      _id: '1',
-      title: 'title',
-      content: '# original content'
-    },
+    adminPageState: 'main',
+    activeFirstMenu: {},
+    activeArticle: {},
+    firstMenuList: [],
+    secondMenuList: [],
     leveledMenu: null,
     isAdmin: true
   },
   mutations: {
+    setAdminPageState (state, nState) {
+      state.adminPageState = nState
+    },
     setFirstMenuList (state, menuList) {
       state.firstMenuList = menuList
+      state.activeFirstMenu = {}
     },
     createFirstMenu (state, menu) { // push a newly created first menu
       state.firstMenuList.push(menu)
     },
     deleteFirstMenu (state, menu) {
-      if (menu.isActive) {
-        state.secondMenuList = null
+      if (menu._id === state.activeFirstMenu._id) { // if (deleted menu is active)
+        state.secondMenuList = []
+        state.activeFirstMenu = {}
+        state.activeArticle = {}
       }
+      // 删除该菜单
       state.firstMenuList = state.firstMenuList.filter((firstMenu) => firstMenu._id !== menu._id)
     },
-    onFirstMenuChanged (state, tMenu) {
-      state.firstMenuList.forEach((menu, index) => { // 把选中的menu的状态设为激活，其它的设为不激活
-        menu.isActive = menu._id === tMenu._id
-        state.firstMenuList.splice(index, 1, menu)
-      })
+    setActiveFirstMenu (state, menu) {
+      state.activeFirstMenu = menu
     },
-    createSecondMenu (state, menu) {
+    pushSecondMenu (state, menu) {
       state.secondMenuList.push(menu)
     },
     deleteSecondMenu (state, menuId) {
+      if (state.activeArticle && menuId === state.activeArticle.secondMenuId) {
+        state.activeArticle = {}
+      }
       state.secondMenuList = state.secondMenuList.filter((menu) => menu._id !== menuId)
     },
     setSecondMenuList (state, menuList) {
       state.secondMenuList = menuList
+      state.activeArticle = {}
     },
     createArticle (state, article) {
-      if (!state.secondMenuList) {
+      if (!state.secondMenuList) { // 未加载二级菜单
         return
       }
-      console.log(state.secondMenuList)
-      let secondMenu = state.secondMenuList.find((secondMenu) => secondMenu._id === article.secondMenuId)
-      if (!secondMenu) {
+      let secondMenu = state.secondMenuList.find(secondMenu => secondMenu._id === article.secondMenuId)
+      if (!secondMenu) { // 文章不在当前二级菜单内
         return
       }
-      secondMenu.articles.push({ _id: article._id, title: article.title, isActive: false })
+      secondMenu.articles.push({ _id: article._id, title: article.title })
     },
     deleteArticle (state, { secondMenuId, articleId }) {
-      let secondMenu = state.secondMenuList.find((menu) => menu._id === secondMenuId)
-      secondMenu.articles = secondMenu.articles.filter((article) => article._id !== articleId)
+      if (state.activeArticle && articleId === state.activeArticle._id) {
+        state.activeArticle = null
+      }
+      let secondMenu = state.secondMenuList.find(menu => menu._id === secondMenuId)
+      secondMenu.articles = secondMenu.articles.filter(article => article._id !== articleId)
     },
-    getArticle (state, tArticle) {
-      state.article = tArticle
-      // let menu = state.secondMenuList.find((menu) => menu._id === tArticle.secondMenuId)
-      state.secondMenuList.forEach((menu, secondMenuIndex) => {
-        menu.articles.forEach((article, index) => {
-          article.isActive = article._id === tArticle._id && tArticle.secondMenuId === menu._id
-          menu.articles.splice(index, 1, article)
-        })
-        state.secondMenuList.splice(secondMenuIndex, 1, menu)
-      })
+    setActiveArticle (state, article) {
+      state.activeArticle = article
     },
     editArticle (state, { title, content }) {
-      state.article.title = title
-      state.article.content = content
+      state.activeArticle.title = title
+      state.activeArticle.content = content
+    }
+  },
+  actions: {
+    changeFirstMenu ({ commit }, firstMenu) {
+      commit('setAdminPageState', 'main')
+      commit('setActiveFirstMenu', firstMenu)
+      axios.get('http://localhost:3000/api/secondMenu', { params: { firstMenuId: firstMenu._id } })
+        .then(res => {
+          let ok = res.data.ok
+          let secondMenuList = res.data.secondMenuList
+
+          if (ok) {
+            commit('setSecondMenuList', secondMenuList)
+          }
+        })
+    },
+    getLeveledMenu ({ state }) {
+      axios.get('http://localhost:3000/api/leveledMenu').then(({ data }) => {
+        state.leveledMenu = data
+      })
     }
   }
 })

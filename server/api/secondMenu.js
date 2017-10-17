@@ -8,7 +8,7 @@ router.get('/secondMenu', async function (req, res, next) {
   let firstMenuId = req.query.firstMenuId
   let secondMenuList = 
     await SecondMenu.find({ firstMenuId })
-      .populate('articles', '_id title')
+      .populate('articles', '_id title secondMenuId')
   res.json({ ok: true, secondMenuList })
 })
 

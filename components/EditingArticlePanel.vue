@@ -33,14 +33,14 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      title: this.$store.state.article.title,
-      content: this.$store.state.article.content,
+      title: this.$store.state.activeArticle.title,
+      content: this.$store.state.activeArticle.content,
       api: 'http://localhost:3000/api/article'
     }
   },
   computed: {
     article () {
-      return this.$store.state.article
+      return this.$store.state.activeArticle
     }
   },
   methods: {

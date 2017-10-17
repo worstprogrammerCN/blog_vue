@@ -45,53 +45,46 @@ import MarkdownContent from '~/components/MarkdownContent.vue'
 import EditingArticlePanel from '~/components/EditingArticlePanel.vue'
 import CreatingArticlePanel from '~/components/CreatingArticlePanel.vue'
 
-import axios from 'axios'
-
 export default {
-  data () {
-    return {
-      state: 'main' // 有菜单主界面状态, 编辑菜单状态, 浏览文章状态, 修改文章状态, 以及新建文章状态
+  computed: {
+    article () {
+      return this.$store.state.activeArticle
+    },
+    state () {
+      return this.$store.state.adminPageState
+      // 有菜单主界面状态, 编辑菜单状态, 浏览文章状态, 修改文章状态, 以及新建文章状态
       //               main, editingMenu , viewing, editingArticle, creatingArticle
     }
   },
-  computed: {
-    article () {
-      return this.$store.state.article
-    }
-  },
   watch: {
-    article (val) {
-      this.state = 'viewing'
+    article (val) { // val is expected to be an object
+      if (val._id) {
+        this.$store.commit('setAdminPageState', 'viewing')
+      }
     }
   },
   methods: {
     editMenu () {
-      this.state = 'editingMenu'
-      console.log('panelStateChanged')
-      this.$emit('panelStateChanged', { 'state': 'editingMenu' })
+      this.$store.commit('setAdminPageState', 'editingMenu')
     },
     cancelEditMenu () {
-      this.state = 'main'
-      this.$emit('panelStateChanged', { 'state': 'main' })
+      this.$store.commit('setAdminPageState', 'main')
     },
-    async startCreatingArticle () {
-      this.state = 'creatingArticle'
-      await axios.get('http://localhost:3000/api/leveledMenu').then((res) => {
-        this.$store.state.leveledMenu = res.data
-        return {}
-      })
+    startCreatingArticle () {
+      this.$store.commit('setAdminPageState', 'creatingArticle')
+      this.$store.dispatch('getLeveledMenu')
     },
     finishCreatingArticle () {
-      this.state = 'main'
+      this.$store.commit('setAdminPageState', 'main')
     },
     startEditingArticle () {
-      this.state = 'editingArticle'
+      this.$store.commit('setAdminPageState', 'editingArticle')
     },
     finishEditingArticle () {
-      this.state = 'viewing'
+      this.$store.commit('setAdminPageState', 'viewing')
     },
     cancelViewing () {
-      this.state = 'main'
+      this.$store.commit('setAdminPageState', 'main')
     }
   },
   components: {

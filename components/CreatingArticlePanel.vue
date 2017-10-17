@@ -24,7 +24,7 @@
           </div>
         </li>
         <li>
-          <div class="select" v-if="selectedSecondMenu">
+          <div class="select" v-if="selectedFirstMenu">
             <select v-model="selectedSecondMenu">
               <option v-for="secondMenu in selectedFirstMenu.secondMenuList" :value="secondMenu">
                 {{ secondMenu.name }}
@@ -37,7 +37,8 @@
 
     <span>selectedFirstMenu {{ selectedFirstMenu }}</span>
 
-    <p v-if="selectedSecondMenu">selectedFirstMenu.secondMenuList {{ selectedFirstMenu.secondMenuList }}</p>
+    <p v-if="selectedFirstMenu">selectedFirstMenu.secondMenuList {{ selectedFirstMenu.secondMenuList }}</p>
+    <p v-else>hasn't selected FirstMenu</p>
     <p>selectedSecondMenu {{ selectedSecondMenu }} </p>
     <p> isCreatable: {{ !!this.selectedFirstMenu && !!this.selectedSecondMenu }} </p>
 
@@ -95,12 +96,17 @@ export default {
       return this.$store.state.secondMenuList
     },
     isCreatable () {
-      return !!this.selectedFirstMenu && !!this.selectedSecondMenu
+      return !!this.selectedFirstMenu && !!this.selectedSecondMenu // '!!'是为了把对象转成布尔值判断
+    }
+  },
+  watch: {
+    selectedFirstMenu (val) { // 当更改选中的一级菜单时，对应的二级菜单应当是处于没选中的状态的
+      this.selectedSecondMenu = null
     }
   },
   methods: {
     createArticle () {
-      if (!this.isCreatable) {
+      if (!this.isCreatable) { // 按钮disabled但仍可点击触发该事件，故需要判断
         return
       }
       let article = {

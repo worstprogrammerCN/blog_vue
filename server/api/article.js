@@ -9,11 +9,11 @@ var Schema = mongoose.Schema,
   ObjectId = Schema.ObjectId
 
 // get article by id
-router.get('/article', async function (req, res, next) {
+router.get('/article', function (req, res, next) {
   let _id = req.query._id
-  let article = await Article.findById(_id)
-
-  res.json({ ok:true, article })
+  Article.findById(_id).then((article) => {
+    res.json({ ok:true, article })
+  })
 })
 
 // revise article

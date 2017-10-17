@@ -11,7 +11,7 @@
         <li class="tags has-addons" v-for="article in secondMenu.articles" :key="article._id">
           <span class="tag is-white">
             {{ article.title }}
-            <button class="delete is-small" @click="deleteArticle( secondMenu._id, article._id)"></button>
+            <button class="delete is-small" @click="deleteArticle(secondMenu._id, article._id)"></button>
           </span>
         </li>
       </ul>
@@ -46,7 +46,7 @@ export default {
       return this.$store.state.secondMenuList
     },
     firstMenuId () {
-      return this.$store.state.firstMenuId
+      return this.$store.state.activeFirstMenu._id
     }
   },
   methods: {
@@ -83,7 +83,7 @@ export default {
         console.log('failed')
       } else {
         this.isAdding = false
-        this.$store.commit('createSecondMenu', { _id, name: this.newSecondMenuName, isActive: false })
+        this.$store.commit('pushSecondMenu', { _id, name: this.newSecondMenuName })
       }
     },
     cancelCreatingSecondMenu () {
