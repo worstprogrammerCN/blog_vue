@@ -32,6 +32,8 @@ const store = () => new Vuex.Store({
       }
     ],
     adminPageState: 'main',
+    // 有菜单主界面状态, 编辑菜单状态, 浏览文章状态, 修改文章状态  , 以及新建文章状态
+    //             main, editingMenu , viewing     , editingArticle, creatingArticle
     activeFirstMenu: {},
     activeArticle: {},
     firstMenuList: [],
@@ -51,6 +53,7 @@ const store = () => new Vuex.Store({
       state.firstMenuList.push(menu)
     },
     deleteFirstMenu (state, menu) {
+      console.log(menu._id === state.activeFirstMenu._id)
       if (menu._id === state.activeFirstMenu._id) { // if (deleted menu is active)
         state.secondMenuList = []
         state.activeFirstMenu = {}
@@ -96,13 +99,28 @@ const store = () => new Vuex.Store({
       state.activeArticle = article
     },
     editArticle (state, { title, content }) {
-      state.activeArticle.title = title
-      state.activeArticle.content = content
+      let activeArticle = state.activeArticle
+      activeArticle.title = title
+      activeArticle.content = content
+
+      // 用splice替换掉菜单数组的文章, 才能被vue察觉数组变化
+      let secondMenu = state.secondMenuList.find(menu => menu._id === activeArticle.secondMenuId)
+      let articleIndex = secondMenu.articles.findIndex(article => article._id === activeArticle._id)
+      secondMenu.articles.splice(articleIndex, 1, activeArticle)
     }
   },
   actions: {
-    changeFirstMenu ({ commit }, firstMenu) {
-      commit('setAdminPageState', 'main')
+    getFirstMenuList ({ commit }) {
+      axios.get('http://localhost:3000/api/firstMenu')
+        .then(({ data }) => {
+          let firstMenuList = data
+          commit('setFirstMenuList', firstMenuList)
+        })
+    },
+    changeFirstMenu ({ state, commit }, firstMenu) {
+      if (state.adminPageState !== 'editingMenu') {
+        commit('setAdminPageState', 'main')
+      }
       commit('setActiveFirstMenu', firstMenu)
       axios.get('http://localhost:3000/api/secondMenu', { params: { firstMenuId: firstMenu._id } })
         .then(res => {
@@ -118,6 +136,43 @@ const store = () => new Vuex.Store({
       axios.get('http://localhost:3000/api/leveledMenu').then(({ data }) => {
         state.leveledMenu = data
       })
+    },
+    postEditedArticle ({ commit }, article) {
+      axios.post('http://localhost:3000/api/article', { article }).then(({ data }) => {
+        if (data.ok) {
+          commit('editArticle', { title: article.title, content: article.content })
+          commit('setAdminPageState', 'viewing')
+        }
+      })
+    },
+    deleteSecondMenu ({ commit }, secondMenuId) {
+      axios.delete(`http://localhost:3000/api/secondMenu/${secondMenuId}`)
+        .then(({ data }) => {
+          if (data.ok) {
+            commit('deleteSecondMenu', secondMenuId)
+          }
+        })
+    },
+    deleteArticle ({ commit }, { secondMenuId, articleId }) {
+      axios.delete(`http://localhost:3000/api/article/${articleId}`)
+        .then(({ data }) => {
+          if (data.ok) {
+            console.log(secondMenuId, articleId)
+            commit('deleteArticle', { secondMenuId, articleId })
+          }
+        })
+    },
+    createSecondMenu ({ state, commit }, name) {
+      let firstMenuId = state.activeFirstMenu._id
+
+      return axios.put('http://localhost:3000/api/secondMenu',
+        { secondMenu: { firstMenuId, name } })
+        .then(({ data }) => {
+          if (data.ok) {
+            commit('pushSecondMenu', { _id: data._id, name })
+            return data
+          }
+        })
     }
   }
 })

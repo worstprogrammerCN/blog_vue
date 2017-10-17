@@ -32,10 +32,10 @@
       <MarkdownContent :rawText="article.content"></MarkdownContent>
     </template>
     <template v-else-if="state == 'editingArticle'">
-      <EditingArticlePanel v-on:finishEditingArticle="finishEditingArticle"/>
+      <EditingArticlePanel />
     </template>
     <template v-else-if="state == 'creatingArticle'">
-      <CreatingArticlePanel v-on:finishCreatingArticle="finishCreatingArticle"/>
+      <CreatingArticlePanel />
     </template>
   </div>  
 </template>
@@ -52,8 +52,6 @@ export default {
     },
     state () {
       return this.$store.state.adminPageState
-      // 有菜单主界面状态, 编辑菜单状态, 浏览文章状态, 修改文章状态, 以及新建文章状态
-      //               main, editingMenu , viewing, editingArticle, creatingArticle
     }
   },
   watch: {
@@ -74,14 +72,8 @@ export default {
       this.$store.commit('setAdminPageState', 'creatingArticle')
       this.$store.dispatch('getLeveledMenu')
     },
-    finishCreatingArticle () {
-      this.$store.commit('setAdminPageState', 'main')
-    },
     startEditingArticle () {
       this.$store.commit('setAdminPageState', 'editingArticle')
-    },
-    finishEditingArticle () {
-      this.$store.commit('setAdminPageState', 'viewing')
     },
     cancelViewing () {
       this.$store.commit('setAdminPageState', 'main')

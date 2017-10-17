@@ -3,9 +3,9 @@
       <ul>
           <li v-for="firstMenu in firstMenuList" :key="firstMenu._id"
            :class="{ 'is-active': firstMenu._id === activeFirstMenu._id }">
-            <a>
+            <a @click="changeFirstMenu(firstMenu)">
                 <span>{{ firstMenu.name }}</span>
-                <button @click="deleteFirstMenu( firstMenu )" class="delete is-small"></button>
+                <button @click="deleteFirstMenu(firstMenu)" class="delete is-small"></button>
             </a>
           </li>
           <template v-if="isAdding">
@@ -51,6 +51,9 @@ export default {
       this.isAdding = true
       this.newFirstMenuName = ''
       this.errorMsg = ''
+    },
+    changeFirstMenu (firstMenu) {
+      this.$store.dispatch('changeFirstMenu', firstMenu)
     },
     createFirstMenu () {
       if (this.newFirstMenuName === '') {
