@@ -119,12 +119,12 @@ export default {
         article._id = data._id
         if (data.ok) {
           this.$store.commit('createArticle', article)
-          this.$store.commit('setAdminPageState', 'main')
+          this.$store.commit('setArticlesPageState', 'main')
         }
       })
     },
     cancelCreateArticle () {
-      this.$store.commit('setAdminPageState', 'main')
+      this.$store.commit('setArticlesPageState', 'main')
     }
   },
   components: {

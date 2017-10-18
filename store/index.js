@@ -31,7 +31,7 @@ const store = () => new Vuex.Store({
         'isActive': false
       }
     ],
-    adminPageState: 'main',
+    articlesPageState: 'main',
     // 有菜单主界面状态, 编辑菜单状态, 浏览文章状态, 修改文章状态  , 以及新建文章状态
     //             main, editingMenu , viewing     , editingArticle, creatingArticle
     activeFirstMenu: {},
@@ -42,8 +42,8 @@ const store = () => new Vuex.Store({
     isAdmin: true
   },
   mutations: {
-    setAdminPageState (state, nState) {
-      state.adminPageState = nState
+    setArticlesPageState (state, nState) {
+      state.articlesPageState = nState
     },
     setFirstMenuList (state, menuList) {
       state.firstMenuList = menuList
@@ -118,8 +118,8 @@ const store = () => new Vuex.Store({
         })
     },
     changeFirstMenu ({ state, commit }, firstMenu) {
-      if (state.adminPageState !== 'editingMenu') {
-        commit('setAdminPageState', 'main')
+      if (state.articlesPageState !== 'editingMenu') {
+        commit('setArticlesPageState', 'main')
       }
       commit('setActiveFirstMenu', firstMenu)
       axios.get('http://localhost:3000/api/secondMenu', { params: { firstMenuId: firstMenu._id } })
@@ -141,7 +141,7 @@ const store = () => new Vuex.Store({
       axios.post('http://localhost:3000/api/article', { article }).then(({ data }) => {
         if (data.ok) {
           commit('editArticle', { title: article.title, content: article.content })
-          commit('setAdminPageState', 'viewing')
+          commit('setArticlesPageState', 'viewing')
         }
       })
     },

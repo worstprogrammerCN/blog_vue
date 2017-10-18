@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     isEditing () {
-      return this.$store.state.adminPageState === 'editingMenu'
+      return this.$store.state.articlePageState === 'editingMenu'
     }
   },
   components: {

@@ -51,7 +51,7 @@ export default {
       this.$store.dispatch('postEditedArticle', article)
     },
     cancelUpload () {
-      this.$store.commit('setAdminPageState', 'viewing')
+      this.$store.commit('setArticlesPageState', 'viewing')
     }
   },
   components: {

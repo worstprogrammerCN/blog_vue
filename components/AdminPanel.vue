@@ -51,32 +51,32 @@ export default {
       return this.$store.state.activeArticle
     },
     state () {
-      return this.$store.state.adminPageState
+      return this.$store.state.articlePageState
     }
   },
   watch: {
     article (val) { // val is expected to be an object
       if (val._id) {
-        this.$store.commit('setAdminPageState', 'viewing')
+        this.$store.commit('setArticlesPageState', 'viewing')
       }
     }
   },
   methods: {
     editMenu () {
-      this.$store.commit('setAdminPageState', 'editingMenu')
+      this.$store.commit('setArticlesPageState', 'editingMenu')
     },
     cancelEditMenu () {
-      this.$store.commit('setAdminPageState', 'main')
+      this.$store.commit('setArticlesPageState', 'main')
     },
     startCreatingArticle () {
-      this.$store.commit('setAdminPageState', 'creatingArticle')
+      this.$store.commit('setArticlesPageState', 'creatingArticle')
       this.$store.dispatch('getLeveledMenu')
     },
     startEditingArticle () {
-      this.$store.commit('setAdminPageState', 'editingArticle')
+      this.$store.commit('setArticlesPageState', 'editingArticle')
     },
     cancelViewing () {
-      this.$store.commit('setAdminPageState', 'main')
+      this.$store.commit('setArticlesPageState', 'main')
     }
   },
   components: {
