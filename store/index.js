@@ -37,7 +37,7 @@ const store = () => new Vuex.Store({
     firstMenuList: [],
     secondMenuList: [],
     leveledMenu: null,
-    isAdmin: true
+    isAdmin: false
   },
   mutations: {
     setActivePage (state, page) {
@@ -111,6 +111,20 @@ const store = () => new Vuex.Store({
     }
   },
   actions: {
+    login ({ state }, { username, password, router, authFailed }) {
+      let admin = { username, password }
+      axios.post('http://localhost:3000/api/admin', { admin })
+        .then(({ data }) => {
+          console.log(data.ok)
+          if (data.ok) {
+            state.isAdmin = true
+            authFailed = false
+            router.push('/admin')
+          } else {
+            authFailed = true
+          }
+        })
+    },
     getFirstMenuList ({ commit }) {
       axios.get('http://localhost:3000/api/firstMenu')
         .then(({ data }) => {

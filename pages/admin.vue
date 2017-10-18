@@ -54,6 +54,7 @@ export default {
       return this.$store.state.articlePageState === 'editingMenu'
     }
   },
+  middleware: 'auth',
   components: {
     MyHeader,
     FirstMenu,
