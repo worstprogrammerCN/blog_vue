@@ -15,22 +15,20 @@ const store = () => new Vuex.Store({
       {
         'id': 0,
         'name': '主页',
-        'href': '/home',
-        'isActive': true
+        'href': '/home'
       },
       {
         'id': 1,
         'name': '文档',
-        'href': '/articles',
-        'isActive': false
+        'href': '/articles'
       },
       {
         'id': 2,
         'name': '其它',
-        'href': '/other',
-        'isActive': false
+        'href': '/other'
       }
     ],
+    activePage: {},
     articlesPageState: 'main',
     // 有菜单主界面状态, 编辑菜单状态, 浏览文章状态, 修改文章状态  , 以及新建文章状态
     //             main, editingMenu , viewing     , editingArticle, creatingArticle
@@ -42,6 +40,9 @@ const store = () => new Vuex.Store({
     isAdmin: true
   },
   mutations: {
+    setActivePage (state, page) {
+      state.activePage = page
+    },
     setArticlesPageState (state, nState) {
       state.articlesPageState = nState
     },
@@ -171,6 +172,14 @@ const store = () => new Vuex.Store({
           if (data.ok) {
             commit('pushSecondMenu', { _id: data._id, name })
             return data
+          }
+        })
+    },
+    getArticle ({ commit }, _id) {
+      axios.get('http://localhost:3000/api/article', { params: { _id } })
+        .then(({ data }) => {
+          if (data.ok) {
+            commit('setActiveArticle', data.article)
           }
         })
     }

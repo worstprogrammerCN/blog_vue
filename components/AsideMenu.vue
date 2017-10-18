@@ -17,14 +17,8 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
-  data () {
-    return {
-      api: 'http://localhost:3000/api/article'
-    }
-  },
   computed: {
     secondMenuList () {
       return this.$store.state.secondMenuList
@@ -39,13 +33,7 @@ export default {
       if (articleHead._id === this.activeArticle._id) {
         return
       }
-      axios.get(this.api, { params: { _id } }).then(({ data }) => {
-        let ok = data.ok
-        let article = data.article
-        if (ok) {
-          this.$store.commit('setActiveArticle', article)
-        }
-      })
+      this.$store.dispatch('getArticle', _id)
     }
   }
 }

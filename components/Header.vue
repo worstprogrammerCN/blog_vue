@@ -14,7 +14,7 @@
             </span>
             <div class="nav-right nav-menu">
                 <router-link v-for="(page, index) in pages" :key="page.id"
-                  :to="page.href" @click.native="refreshActive(page.href)"
+                  :to="page.href" @click.native="refreshActivePage(page.href)"
                   :class="{ 'is-active' : page.href === href, 'nav-item': true }">
                   {{ page.name }}
                 </router-link>
@@ -35,7 +35,7 @@
 <script>
 
 export default {
-  props: ['href', 'logo'],
+  props: ['logo'],
   data () {
     return {
       logoHref: this.logo
@@ -44,10 +44,16 @@ export default {
   computed: {
     pages () {
       return this.$store.state.pages
+    },
+    href () {
+      return this.$store.state.href
+    },
+    activePage () {
+      return this.$store.state.activePage
     }
   },
   methods: {
-    refreshActive (href) {
+    refreshActivePage (href) {
       this.$store.state.href = href
     }
   },

@@ -1,15 +1,15 @@
 <template>
   <div>
-    <MyHeader :href="href" :logo="logo"/>
-    <FirstMenu v-on:firstMenuChanged="refreshSecondMenu"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.3/css/bulma.min.css" />
+    <MyHeader :logo="logo"/>
+    <FirstMenu />
     <div class="container is-fluid">
       <div class="columns">
         <div class="column is-2">
-          <AsideMenu/>
+          <AsideMenu />
         </div>
-        <div class="column">
-          <MarkdownEditor v-if="isAdmin" :rawText="rawText"/>
-          <MarkdownContent v-else :rawText="rawText"/>
+        <div class="column is-10">
+          <VisitorPanel />
         </div>
       </div> 
     </div>
@@ -18,49 +18,32 @@
 
 <script>
 import MyHeader from '~/components/Header.vue'
-import MyFooter from '~/components/Footer.vue'
 import FirstMenu from '~/components/FirstMenu.vue'
 import AsideMenu from '~/components/AsideMenu.vue'
-import MarkdownContent from '~/components/MarkdownContent.vue'
-import MarkdownEditor from '~/components/MarkdownEditor.vue'
+import VisitorPanel from '~/components/VisitorPanel.vue'
 
 export default {
-  async asyncData ({ isServer, store, req }) {
+  created () {
+    this.$store.dispatch('getFirstMenuList')
+  },
+  data () {
     return {
-      rawText: `#asd 
-      > asdf`,
       logo: 'bulma-logo'
     }
   },
-  head () {
-    return {
-      title: 'article',
-      link: [
-        {
-          rel: 'stylesheet',
-          href: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'
-        }
-      ]
-    }
-  },
   computed: {
-    href () {
-      return this.$store.state.href
-    },
-    isAdmin () {
-      return this.$store.state.isAdmin
+    isEditing () {
+      return this.$store.state.articlePageState === 'editingMenu'
     }
   },
-  methods: {
-    refreshSecondMenu (menuId) {
-      // get secondMenu
-    }
-  },
-  components: { MyHeader, MyFooter, FirstMenu, AsideMenu, MarkdownEditor, MarkdownContent }
+  components: {
+    MyHeader,
+    FirstMenu,
+    AsideMenu,
+    VisitorPanel
+  }
 }
 </script>
 
 <style scoped>
-@import url('bulma/css/bulma.css');
-
 </style>
