@@ -1,7 +1,7 @@
 <template>
   <div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.3/css/bulma.min.css" />
-    <MyHeader :logo="logo"/>
+    <AdminHeader :logo="logo"/>
     <template v-if="isEditing">
       <EditingFirstMenu />
       <div class="container is-fluid">
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import MyHeader from '~/components/Header.vue'
+import AdminHeader from '~/components/AdminHeader.vue'
 import FirstMenu from '~/components/FirstMenu.vue'
 import AsideMenu from '~/components/AsideMenu.vue'
 import EditingFirstMenu from '~/components/EditingFirstMenu.vue'
@@ -56,7 +56,7 @@ export default {
   },
   middleware: 'auth',
   components: {
-    MyHeader,
+    AdminHeader,
     FirstMenu,
     AsideMenu,
     EditingFirstMenu,

@@ -48,5 +48,7 @@ export default {
 
 <style scoped>
 @import url('bulma/css/bulma.css');
-
+section.hero{
+  height: 100vh;
+}
 </style>

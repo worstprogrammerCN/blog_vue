@@ -1,7 +1,6 @@
 <template>
   <div>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css" integrity="sha256-HEtF7HLJZSC3Le1HcsWbz1hDYFPZCqDhZa9QsCgVUdw=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.3/css/bulma.min.css" />
     <section class="hero is-success is-fullheight">
       <div class="hero-body">
         <div class="container has-text-centered">
@@ -10,7 +9,7 @@
             <p class="subtitle has-text-grey">Please login to proceed.</p>
             <div class="box">
               <figure class="avatar">
-                <img src="https://placehold.it/128x128">
+                <img src="~/assets/img/icon.png">
               </figure>
               <form>
                 <div class="field">
@@ -98,6 +97,8 @@ html,body {
   border-radius: 50%;
   -webkit-box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
   box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
+  height: 128px;
+  width: 128px;
 }
 input {
   font-weight: 300;

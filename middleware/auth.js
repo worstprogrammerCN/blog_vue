@@ -1,5 +1,7 @@
 export default function (context) {
-  if (!context.store.state.isAdmin) {
-    return context.redirect('/home')
+  if (context.isServer) {
+    if (!context.req.session.isAdmin) {
+      return context.redirect('/home')
+    }
   }
 }
